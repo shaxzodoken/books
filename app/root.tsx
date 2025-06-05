@@ -4,12 +4,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 
 import "./tailwind.css";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
+import { getUser } from "~/session.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,6 +27,15 @@ export const links: LinksFunction = () => [
   },
 ];
 
+type LoaderData = {
+  user: Awaited<ReturnType<typeof getUser>>;
+};
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const user = await getUser(request);
+  return json<LoaderData>({ user });
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -34,9 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Navbar />
-        <main className="container mx-auto py-8">{children}</main>
-        <Footer />
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -45,5 +55,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { user } = useLoaderData<typeof loader>();
+  return (
+    <>
+      <Navbar user={user} />
+      <main className="container mx-auto py-8">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
 }
