@@ -16,6 +16,7 @@ Before starting the dev server the first time, install dependencies and generate
 npm install
 npx prisma generate
 ```
+Copy `.env.example` to `.env` and update `DATABASE_URL` with your local credentials. The example uses password `root`.
 
 ## Deployment
 
