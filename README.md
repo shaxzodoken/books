@@ -15,7 +15,6 @@ Before starting the dev server the first time, install dependencies and generate
 ```sh
 npm install
 npx prisma generate
-npx prisma migrate dev --name init
 ```
 
 ## Deployment

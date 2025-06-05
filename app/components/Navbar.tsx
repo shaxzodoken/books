@@ -9,9 +9,7 @@ export default function Navbar() {
           <li>
             <Link to="/products" className="hover:underline">Products</Link>
           </li>
-          <li>
-            <Link to="/orders" className="hover:underline">Orders</Link>
-          </li>
+ main
         </ul>
       </nav>
     </header>
