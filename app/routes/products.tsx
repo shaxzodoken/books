@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, json, redirect, type SerializeFrom } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/db.server";
 import { Button } from "~/components/ui/button";
@@ -23,6 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Products() {
   const { products } = useLoaderData<typeof loader>();
+  type ProductFromLoader = SerializeFrom<typeof loader>["products"][number];
   return (
     <div className="container mx-auto space-y-6 p-4">
       <div className="flex items-center justify-between">
@@ -32,7 +33,7 @@ export default function Products() {
         </Button>
       </div>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((p) => (
+        {products.map((p: ProductFromLoader) => (
           <li key={p.id} className="rounded border p-4 shadow-sm flex flex-col justify-between">
             <div className="space-y-1">
               <p className="text-lg font-semibold">{p.name}</p>
