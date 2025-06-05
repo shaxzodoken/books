@@ -1,9 +1,16 @@
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { prisma } from "~/db.server";
 import { Button } from "~/components/ui/button";
+import { requireAdmin } from "~/session.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  await requireAdmin(request);
+  return null;
+}
 
 export async function action({ request }: ActionFunctionArgs) {
+  await requireAdmin(request);
   const formData = await request.formData();
   const name = String(formData.get("name"));
   const price = parseFloat(String(formData.get("price")));

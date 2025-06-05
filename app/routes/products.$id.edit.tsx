@@ -2,8 +2,10 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-r
 import { Form, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/db.server";
 import { Button } from "~/components/ui/button";
+import { requireAdmin } from "~/session.server";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  await requireAdmin(request);
   const id = Number(params.id);
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product) throw new Response("Not Found", { status: 404 });
@@ -11,6 +13,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  await requireAdmin(request);
   const id = Number(params.id);
   const formData = await request.formData();
   const name = String(formData.get("name"));

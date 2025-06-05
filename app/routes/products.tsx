@@ -1,14 +1,18 @@
-import { ActionFunctionArgs, json, redirect, type SerializeFrom } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
+
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/db.server";
 import { Button } from "~/components/ui/button";
+import { getUser, requireAdmin } from "~/session.server";
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const user = await getUser(request);
   const products = await prisma.product.findMany({ orderBy: { id: "desc" } });
-  return json({ products });
+  return json({ products, user });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  await requireAdmin(request);
   const formData = await request.formData();
   const intent = formData.get("intent");
   if (intent === "delete") {
@@ -22,15 +26,18 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Products() {
-  const { products } = useLoaderData<typeof loader>();
-  type ProductFromLoader = SerializeFrom<typeof loader>["products"][number];
+codex/implement-user-models-and-session-handling
+  const { products, user } = useLoaderData<typeof loader>();
+
   return (
     <div className="container mx-auto space-y-6 p-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Button asChild>
-          <Link to="/products/new">New Product</Link>
-        </Button>
+        {user?.role === "ADMIN" && (
+          <Button asChild>
+            <Link to="/products/new">New Product</Link>
+          </Button>
+        )}
       </div>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p: ProductFromLoader) => (
@@ -40,17 +47,19 @@ export default function Products() {
               <p className="text-sm text-gray-500">${p.price.toFixed(2)}</p>
               {p.description && <p className="text-sm text-gray-600 dark:text-gray-400">{p.description}</p>}
             </div>
-            <div className="mt-4 flex gap-2">
-              <Button variant="outline" asChild>
-                <Link to={`/products/${p.id}/edit`}>Edit</Link>
-              </Button>
-              <Form method="post" className="ml-auto">
-                <input type="hidden" name="id" value={p.id} />
-                <Button type="submit" name="intent" value="delete" variant="destructive">
-                  Delete
+            {user?.role === "ADMIN" && (
+              <div className="mt-4 flex gap-2">
+                <Button variant="outline" asChild>
+                  <Link to={`/products/${p.id}/edit`}>Edit</Link>
                 </Button>
-              </Form>
-            </div>
+                <Form method="post" className="ml-auto">
+                  <input type="hidden" name="id" value={p.id} />
+                  <Button type="submit" name="intent" value="delete" variant="destructive">
+                    Delete
+                  </Button>
+                </Form>
+              </div>
+            )}
           </li>
         ))}
       </ul>

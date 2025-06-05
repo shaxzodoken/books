@@ -15,3 +15,24 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
