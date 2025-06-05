@@ -10,6 +10,14 @@ Run the dev server:
 npm run dev
 ```
 
+Before starting the dev server the first time, install dependencies and generate the Prisma client:
+
+```sh
+npm install
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
 ## Deployment
 
 First, build your app for production:
