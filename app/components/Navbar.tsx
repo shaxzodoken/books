@@ -9,6 +9,7 @@ export default function Navbar({ user }: { user: { role: string } | null }) {
           <li>
             <Link to="/products" className="hover:underline">Products</Link>
           </li>
+codex/implement-user-models-and-session-handling
           {user?.role === "ADMIN" && (
             <li>
               <Link to="/products/new" className="hover:underline">New Product</Link>
