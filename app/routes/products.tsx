@@ -24,25 +24,26 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function Products() {
   const { products } = useLoaderData<typeof loader>();
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Products</h1>
+    <div className="container mx-auto space-y-6 p-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Products</h1>
         <Button asChild>
           <Link to="/products/new">New Product</Link>
         </Button>
       </div>
-      <ul className="space-y-2">
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p) => (
-          <li key={p.id} className="border p-2 rounded flex justify-between items-center">
-            <div>
-              <p className="font-semibold">{p.name}</p>
+          <li key={p.id} className="rounded border p-4 shadow-sm flex flex-col justify-between">
+            <div className="space-y-1">
+              <p className="text-lg font-semibold">{p.name}</p>
               <p className="text-sm text-gray-500">${p.price.toFixed(2)}</p>
+              {p.description && <p className="text-sm text-gray-600 dark:text-gray-400">{p.description}</p>}
             </div>
-            <div className="flex gap-2">
+            <div className="mt-4 flex gap-2">
               <Button variant="outline" asChild>
                 <Link to={`/products/${p.id}/edit`}>Edit</Link>
               </Button>
-              <Form method="post">
+              <Form method="post" className="ml-auto">
                 <input type="hidden" name="id" value={p.id} />
                 <Button type="submit" name="intent" value="delete" variant="destructive">
                   Delete

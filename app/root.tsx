@@ -1,5 +1,4 @@
 import {
-  Link,
   Links,
   Meta,
   Outlet,
@@ -9,6 +8,8 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
+import Navbar from "~/components/Navbar";
+import Footer from "~/components/Footer";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,13 +34,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <header className="border-b p-4">
-          <nav className="container mx-auto flex gap-4">
-            <Link to="/" className="font-bold">Home</Link>
-            <Link to="/products">Products</Link>
-          </nav>
-        </header>
-        <main className="container mx-auto py-4">{children}</main>
+        <Navbar />
+        <main className="container mx-auto py-8">{children}</main>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>

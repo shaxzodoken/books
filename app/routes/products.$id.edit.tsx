@@ -23,9 +23,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export default function EditProduct() {
   const { product } = useLoaderData<typeof loader>();
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
-      <Form method="post" className="space-y-4 max-w-sm">
+    <div className="container mx-auto max-w-lg space-y-6 p-4">
+      <h1 className="text-3xl font-bold">Edit Product</h1>
+      <Form method="post" className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="name">Name</label>
           <input id="name" name="name" defaultValue={product.name} className="w-full border p-2 rounded" required />
